@@ -47,3 +47,7 @@ func DeleteExpense(c echo.Context) error {
     result := txtdb.DeleteExpense(ID)
     return c.JSON(http.StatusOK, result)
 }
+
+func PrepareExpense(c echo.Context) error {
+    return c.JSON(http.StatusOK, "true")
+}
