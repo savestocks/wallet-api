@@ -13,16 +13,16 @@ import (
 	"github.com/andersonlira/wallet-api/gateway/txtdb"
 )
 
-func PrepareExpense(name string) domain.Expense{
+func PrepareExpense(name string) (domain.Expense,error){
 	account, err := findaccount(name)
-	if err != nil {
-		fmt.Println("Problem preparing expense")
-	}
 	expense := domain.Expense{}
+	if err != nil {
+		return expense,errors.New("not found")
+	}
 	expense.ID = account.ID
 	expense.Name = account.Name
 	txtdb.UpdateExpense(account.ID, expense)
-	return expense
+	return expense,nil
 }
 
 func findaccount(accountName string) (account,error){
@@ -72,7 +72,7 @@ func findransaction(gnc gnc,account account){
 				idx := strings.Index(s.Value,"/")
 				v,_ := strconv.Atoi(s.Value[0:idx])
 				tot+= v
-				fmt.Println(t.Description, s.Value,tot)
+				fmt.Println(t.DatePosted.Date, t.Description, s.Value,tot)
 
 			}
 		}
@@ -100,9 +100,18 @@ type account struct{
 type transaction struct{
 	XMLName xml.Name `xml:"transaction"`
 	ID string `xml:"id"`
+	DatePosted datePosted `xml:"date-posted"`
 	Description string `xml:"description"`
 	Splits splits `xml:"splits"`
 }
+
+type datePosted struct {
+	XMLName xml.Name `xml:"date-posted"`
+	Date string  `xml:"date"`
+
+}
+
+
 
 type splits struct{
 	XMLName xml.Name `xml:"splits"`
