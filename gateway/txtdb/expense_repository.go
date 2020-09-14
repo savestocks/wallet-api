@@ -9,7 +9,6 @@ import (
 
     "github.com/andersonlira/wallet-api/domain"
 	"github.com/andersonlira/goutils/io"
-	"github.com/andersonlira/goutils/str"
 )
 
 //GetExpenseList return all items 
@@ -37,7 +36,6 @@ func GetExpenseByID(ID string) (domain.Expense, error) {
 //SaveExpense saves a Expense object
 func SaveExpense(it domain.Expense) domain.Expense {
 	list := GetExpenseList()
-	it.ID = str.NewUUID()
 	it.CreatedAt = time.Now()
 	list = append(list, it)
 	writeExpense(list)
@@ -49,6 +47,7 @@ func UpdateExpense(ID string, it domain.Expense) domain.Expense{
 	list := GetExpenseList()
 	for idx, _ := range list {
 		if(list[idx].ID == ID){
+			it.CreatedAt = list[idx].CreatedAt
 			list[idx] = it
 			list[idx].ID = ID
 			list[idx].UpdatedAt = time.Now()
@@ -56,7 +55,7 @@ func UpdateExpense(ID string, it domain.Expense) domain.Expense{
 			return list[idx]
 		}
 	}
-	return it
+	return SaveExpense(it)
 }
 
 //DeleteExpense delete object by giving ID

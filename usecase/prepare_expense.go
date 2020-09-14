@@ -10,32 +10,22 @@ import (
 	"strings"
 	
 	"github.com/andersonlira/wallet-api/domain"
+	"github.com/andersonlira/wallet-api/gateway/txtdb"
 )
 
 func PrepareExpense(name string) domain.Expense{
-	account, err := findAccount(name)
+	account, err := findaccount(name)
 	if err != nil {
 		fmt.Println("Problem preparing expense")
 	}
 	expense := domain.Expense{}
 	expense.ID = account.ID
 	expense.Name = account.Name
+	txtdb.UpdateExpense(account.ID, expense)
 	return expense
 }
 
-func main(){
-	fmt.Println("Running")
-	account,err := findAccount("Millenium - CC")
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(account)
-	
-}
-
-func findAccount(accountName string) (Account,error){
+func findaccount(accountName string) (account,error){
 	gnc := loadXml()
 	for i, account := range gnc.Book.Accounts {
 		if gnc.Book.Accounts[i].Name == accountName {
@@ -44,10 +34,10 @@ func findAccount(accountName string) (Account,error){
 		}
 	}
 
-	return Account{}, errors.New("Account not found")
+	return account{}, errors.New("account not found")
 }
 
-func loadXml() (gnc Gnc){
+func loadXml() (gnc gnc){
     // Open our xmlFile
     xmlFile, err := os.Open("bd/2020.xml")
     // if we os.Open returns an error then handle it
@@ -62,7 +52,7 @@ func loadXml() (gnc Gnc){
     // read our opened xmlFile as a byte array.
 	byteValue, _ := ioutil.ReadAll(xmlFile)
 
-    // we initialize our Gnc array
+    // we initialize our gnc array
     // we unmarshal our byteArray which contains our
     // xmlFiles content into 'gnc' which we defined above
     xml.Unmarshal(byteValue, &gnc)
@@ -74,7 +64,7 @@ func loadXml() (gnc Gnc){
 	return
 }
 
-func findransaction(gnc Gnc,account Account){
+func findransaction(gnc gnc,account account){
 	tot := 0
 	for _,t := range gnc.Book.Transactions {
 		for _,s := range t.Splits.Splits {
@@ -89,35 +79,36 @@ func findransaction(gnc Gnc,account Account){
 	}
 }
 
-type Gnc struct {
+
+type gnc struct {
 	Name xml.Name `xml:"gnc"`
-	Book Book `xml:"book"`
+	Book book `xml:"book"`
 }
-type Book struct{
+type book struct{
 	XMLName xml.Name `xml:"book"`
-	Accounts   []Account   `xml:"account"`
-	Transactions []Transaction `xml:"transaction"`
+	Accounts   []account   `xml:"account"`
+	Transactions []transaction `xml:"transaction"`
 
 }
-type Account struct{
+type account struct{
 	XMLName xml.Name `xml:"account"`
 	ID string `xml:"id"`
 	Name    string   `xml:"name"`
 	
 
 }
-type Transaction struct{
+type transaction struct{
 	XMLName xml.Name `xml:"transaction"`
 	ID string `xml:"id"`
 	Description string `xml:"description"`
-	Splits Splits `xml:"splits"`
+	Splits splits `xml:"splits"`
 }
 
-type Splits struct{
+type splits struct{
 	XMLName xml.Name `xml:"splits"`
-	Splits []Split `xml:"split"`
+	Splits []split `xml:"split"`
 }
-type Split struct{
+type split struct{
 	XMLName xml.Name `xml:"split"`
 	Account string `xml:"account"`
 	Value string `xml:"value"`
