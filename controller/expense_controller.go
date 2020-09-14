@@ -31,8 +31,8 @@ func GetExpenseByID(c echo.Context) error {
 func SaveExpense(c echo.Context) error {
     it := domain.Expense{}
     c.Bind(&it)
-    it = txtdb.SaveExpense(it)
-    return c.JSON(http.StatusCreated, it)
+    expense := usecase.PrepareExpense(it.Name)
+    return c.JSON(http.StatusOK, expense)
 }
 
 func UpdateExpense(c echo.Context) error {
@@ -49,9 +49,3 @@ func DeleteExpense(c echo.Context) error {
     return c.JSON(http.StatusOK, result)
 }
 
-func PrepareExpense(c echo.Context) error {
-    it := domain.Expense{}
-    c.Bind(&it)
-    expense, _ := usecase.PrepareExpense(it.Name)
-    return c.JSON(http.StatusOK, expense)
-}

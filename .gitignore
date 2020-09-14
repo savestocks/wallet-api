@@ -18,3 +18,5 @@ wallet-api
 # Temp
 .DS_Store
 bd/*.json
+bd/*.xml
+

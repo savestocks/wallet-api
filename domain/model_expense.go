@@ -10,5 +10,5 @@ type Expense struct {
     CreatedAt time.Time `json:"dateCreated,omitempty"`
     UpdatedAt time.Time `json:"dateUpdated,omitempty"`
     Name string `json:"name"`
-    MonthlyBudget int `json:"monthlyBudget`
+    MonthlyBudget int `json:"monthlyBudget"`
 }
