@@ -27,7 +27,7 @@ func init() {
 	_ = viper.BindEnv("UsePrometheus", "USEPROMETHEUS")
 	viper.SetDefault("UsePrometheus", false)
 	_ = viper.BindEnv("Port", "PORT")
-	viper.SetDefault("Port", "8080")
+	viper.SetDefault("Port", "8081")
 	_ = viper.BindEnv("AppName", "APP_NAME")
 	viper.SetDefault("AppName", "wallet-api")
 	_ = viper.BindEnv("LogLevel", "LOG_LEVEL")
