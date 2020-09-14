@@ -4,6 +4,7 @@ import (
     "net/http"
 
     "github.com/andersonlira/wallet-api/gateway/txtdb"
+    "github.com/andersonlira/wallet-api/usecase"
     "github.com/andersonlira/wallet-api/domain"
 	"github.com/labstack/echo/v4"
 
@@ -49,5 +50,8 @@ func DeleteExpense(c echo.Context) error {
 }
 
 func PrepareExpense(c echo.Context) error {
-    return c.JSON(http.StatusOK, "true")
+    it := domain.Expense{}
+    c.Bind(&it)
+    expense, _ := usecase.PrepareExpense(it.Name)
+    return c.JSON(http.StatusOK, expense)
 }
