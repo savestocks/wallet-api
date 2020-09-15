@@ -14,9 +14,8 @@ import (
 	"github.com/andersonlira/wallet-api/gateway/txtdb"
 )
 
-func PrepareExpense(name string) (domain.Expense,error){
-	account, err := findAccount(name)
-	expense := domain.Expense{}
+func PrepareExpense(expense domain.Expense) (domain.Expense,error){
+	account, err := findAccount(expense.Name)
 	if err != nil {
 		return expense,errors.New("not found")
 	}
@@ -33,7 +32,6 @@ func findAccount(accountNameOrID string) (account,error){
 	gnc := loadXml()
 	for i, account := range gnc.Book.Accounts {
 		if gnc.Book.Accounts[i].Name == accountNameOrID  || gnc.Book.Accounts[i].ID == accountNameOrID{
-			findransaction(gnc,account)
 			return  account,nil
 		}
 	}

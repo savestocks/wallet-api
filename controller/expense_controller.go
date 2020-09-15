@@ -31,7 +31,7 @@ func GetExpenseByID(c echo.Context) error {
 func SaveExpense(c echo.Context) error {
     it := domain.Expense{}
     c.Bind(&it)
-    expense,err  := usecase.PrepareExpense(it.Name)
+    expense,err  := usecase.PrepareExpense(it)
     if err != nil {
         return c.JSON(http.StatusNotFound, false)
     }
