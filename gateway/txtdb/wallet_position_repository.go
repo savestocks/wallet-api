@@ -26,11 +26,11 @@ func GetWalletPositionList() []domain.WalletPosition {
 	return list
 }
 
-//GetWalletPositionByID return all items 
-func GetWalletPositionByID(ID string) (domain.WalletPosition, error) {
+//GetWalletPositionByExpenseID return all items 
+func GetLastWalletPositionByExpenseID(ID string) (domain.WalletPosition, error) {
 	list := GetWalletPositionList()
 	for idx, _ := range list {
-		if(list[idx].ID == ID){
+		if(list[idx].ExpenseID == ID){
 			return list[idx],nil
 		}
 	}

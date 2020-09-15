@@ -8,13 +8,14 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 	
 	"github.com/andersonlira/wallet-api/domain"
 	"github.com/andersonlira/wallet-api/gateway/txtdb"
 )
 
 func PrepareExpense(name string) (domain.Expense,error){
-	account, err := findaccount(name)
+	account, err := findAccount(name)
 	expense := domain.Expense{}
 	if err != nil {
 		return expense,errors.New("not found")
@@ -25,10 +26,13 @@ func PrepareExpense(name string) (domain.Expense,error){
 	return expense,nil
 }
 
-func findaccount(accountName string) (account,error){
+
+
+
+func findAccount(accountNameOrID string) (account,error){
 	gnc := loadXml()
 	for i, account := range gnc.Book.Accounts {
-		if gnc.Book.Accounts[i].Name == accountName {
+		if gnc.Book.Accounts[i].Name == accountNameOrID  || gnc.Book.Accounts[i].ID == accountNameOrID{
 			findransaction(gnc,account)
 			return  account,nil
 		}
@@ -64,19 +68,24 @@ func loadXml() (gnc gnc){
 	return
 }
 
-func findransaction(gnc gnc,account account){
+func findransaction(gnc gnc,account account) int{
 	tot := 0
+	year, month, _ := time.Now().Date()
+	base := fmt.Sprintf("%d-%02d",year,int(month))
 	for _,t := range gnc.Book.Transactions {
 		for _,s := range t.Splits.Splits {
 			if s.Account == account.ID {
 				idx := strings.Index(s.Value,"/")
 				v,_ := strconv.Atoi(s.Value[0:idx])
-				tot+= v
-				fmt.Println(t.DatePosted.Date, t.Description, s.Value,tot)
+				if strings.HasPrefix(t.DatePosted.Date,base) {
+					tot+= v
+					fmt.Println(base, t.DatePosted.Date, t.Description, s.Value,tot)
+				}
 
 			}
 		}
 	}
+	return tot
 }
 
 

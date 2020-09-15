@@ -5,6 +5,7 @@ import (
 
     "github.com/andersonlira/wallet-api/gateway/txtdb"
     "github.com/andersonlira/wallet-api/domain"
+    "github.com/andersonlira/wallet-api/usecase"
 	"github.com/labstack/echo/v4"
 
 )
@@ -20,7 +21,7 @@ func GetWalletPositionList(c echo.Context) error {
 
 func GetWalletPositionByID(c echo.Context) error {
     ID := c.Param("id")
-    it, err := txtdb.GetWalletPositionByID(ID)
+    it, err := usecase.GetWalletPositionByExpenseID(ID)
     if err != nil {
         return c.JSON(http.StatusNotFound,it)
     }
