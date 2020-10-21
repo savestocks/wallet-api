@@ -47,7 +47,6 @@ func loadXml() (gnc gnc){
         fmt.Println(err)
     }
 
-    fmt.Println("Successfully Opened xml file")
     // defer the closing of our xmlFile so that we can parse it later on
     defer xmlFile.Close()
 
@@ -77,7 +76,6 @@ func findransaction(gnc gnc,account account) int{
 				v,_ := strconv.Atoi(s.Value[0:idx])
 				if strings.HasPrefix(t.DatePosted.Date,base) {
 					tot+= v
-					fmt.Println(base, t.DatePosted.Date, t.Description, s.Value,tot)
 				}
 
 			}
